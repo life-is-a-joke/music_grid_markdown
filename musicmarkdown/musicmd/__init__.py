@@ -31,12 +31,16 @@ class Grid:
         "title": "<h1>{t}</h1>",
         "subtitle": "<h2>{t}</h2>",
         "author": '<p class="author">{t}</p>',
+        "beat": '<p class="beat">Beat: {t}</p>',
+        "key": '<p class="key">Key: {t}</p>',
         "copyright": '<div class="footer">®{t}</div>'
     }
     info = {
         "title": None,
         "subtitle": None,
         "author": None,
+        "beat": None,
+        "key": None,
         "copyright": None
     }
 
@@ -348,6 +352,8 @@ class GridProcessor:
         "title": re.compile(r"^#([^#]+)$"),
         "subtitle": re.compile(r"^#{2}([^#]+)$"),
         "author": re.compile(r"^(?i:author:)(.+)$"),
+        "key": re.compile(r"^(?i:key:)(.+)$"),
+        "beat": re.compile(r"^(?i:beat:)(.+)$"),
         "copyright": re.compile(r"^(?i:copyright:)(.+)$"),
         "vspace": re.compile(r"^%vspace-?(.*)%$"),
         "tag": re.compile(r"^(<.*>)$"),
@@ -478,6 +484,8 @@ class GridProcessor:
             m_title = self.re["title"].match(line)
             m_subtl = self.re["subtitle"].match(line)
             m_author = self.re["author"].match(line)
+            m_key = self.re["key"].match(line)
+            m_beat = self.re["beat"].match(line)
             m_copyright = self.re["copyright"].match(line)
             m_vspace = self.re["vspace"].match(line)
             m_sectn = self.re["sections-line"].match(line)
@@ -490,6 +498,10 @@ class GridProcessor:
                 g.info['subtitle'] = m_subtl.group(1).strip()
             elif m_author:
                 g.info['author'] = m_author.group(1).strip()
+            elif m_key:
+                g.info['key'] = m_key.group(1).strip()
+            elif m_beat:
+                g.info['beat'] = m_beat.group(1).strip()
             elif m_copyright:
                 g.info['copyright'] = m_copyright.group(1).strip()
             elif m_vspace:
