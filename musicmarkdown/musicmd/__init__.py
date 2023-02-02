@@ -458,6 +458,7 @@ class GridProcessor:
     def run(self, lines):
         g = Grid()
 
+        prev_line_is_empty = False
         for line in lines:
 
             # remove comments
@@ -467,7 +468,12 @@ class GridProcessor:
 
             line = line.strip()
             if not line:
-                continue  # skip empty lines
+                if prev_line_is_empty:
+                    line = '%vspace-small%'
+                else:
+                    prev_line_is_empty = True
+                    continue  # skip empty lines
+            prev_line_is_empty = False
 
             m_title = self.re["title"].match(line)
             m_subtl = self.re["subtitle"].match(line)
