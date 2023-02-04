@@ -1,0 +1,14 @@
+[project]
+name = "musicmd"
+version = "0.4.0"
+authors = [
+  { name="Kyaw Tun", email="kyawtun@yathit.com" },
+]
+description = "Markdown music plugin for mkdocs"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: GNU V3",
+    "Operating System :: OS Independent",
+]

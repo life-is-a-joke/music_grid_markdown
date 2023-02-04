@@ -577,13 +577,23 @@ def compile_mmd(filename, out_filename="index.html", live_server_addr=None):
     with open(filename, "r", encoding='utf-8') as f:
         mmd = f.readlines()
 
-    # read it
-    gp = GridProcessor()
-    g = gp.run(mmd)
+    g = render_md(mmd)
 
     # write html
     with open(out_filename, 'w', encoding='utf-8') as f:
         f.write(g.to_html(live_server_addr=live_server_addr))
+
+
+def render_md(mmd):
+    # read it
+    gp = GridProcessor()
+    g = gp.run(mmd)
+    return g
+
+
+def render_md_html(mmd, live_server_addr=None):
+    g = render_md(mmd)
+    return g.to_html(live_server_addr=live_server_addr)
 
 
 class Watcher(threading.Thread):

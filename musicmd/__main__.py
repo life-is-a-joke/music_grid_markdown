@@ -1,5 +1,5 @@
 import argparse
-from .__init__ import Watcher, ThreadedServer, compile_mmd
+from .renderrer import Watcher, ThreadedServer, compile_mmd, render_md
 import logging
 import os
 
@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog="musicmd", description='Compile a mmd script to html')
     parser.add_argument('file', help='The mmd script file that will be compiled')
-    parser.add_argument('-o', '--output', help='Name of the output HTML file', default='index.html')
+    parser.add_argument('-o', '--output', help='Name of the output HTML file', default='')
 
     sp = parser.add_subparsers(title="optional commands", dest="command")
     serve = sp.add_parser('serve', help='Start a live web-server and preview the compiled script')
@@ -21,6 +21,8 @@ if __name__ == "__main__":
     n = parser.parse_args()
     # watch.parse_args()
     # print(n)
+    if not n.output:
+        n.output = n.file + '.html'
 
     if not os.path.exists(n.file):
         print(f"ERROR: file {n.file} not found in the current directory")

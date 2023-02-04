@@ -31,6 +31,11 @@ Copyright: Relevant Copyright
 - [A]x2 -> [B]x2 -> [CODA]
 ```
 
+## Development and packaing as mkdocs plugin
+
+	python3 -m pip install --upgrade build
+	python3 -m build	
+
 ## Install and use
 
 MusicMarkdown is an executable python module.
@@ -38,6 +43,7 @@ MusicMarkdown is an executable python module.
 1. Download and install [Python3](https://www.python.org/downloads/) (if it is not installed already in your system)
 
 2. Install the module with this command in a terminal window
+
 
 		pip3 install musicmarkdown
 
