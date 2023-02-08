@@ -11,6 +11,11 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 log = logger.warning
 
+
+def get_css():
+    return resource_string('musicmd', 'resources/musicgrid.css').decode()
+
+
 class Grid:
     """
     The markdown document object.
@@ -55,8 +60,7 @@ class Grid:
         else:
             jscript = ''
 
-        css = resource_string('musicmd', 'resources/musicgrid.css').decode()
-
+        css = get_css()
         self.html["head"] = '<!DOCTYPE html>\n'\
                             '<html lang="en" dir="ltr">\n'\
                             '<head>\n' \
