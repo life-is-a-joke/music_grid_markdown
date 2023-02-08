@@ -6,6 +6,7 @@ from time import sleep
 import os
 from pkg_resources import resource_string
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 log = logger.warning
@@ -594,6 +595,22 @@ def render_md(mmd):
 def render_md_html(mmd, live_server_addr=None):
     g = render_md(mmd)
     return g.to_html(live_server_addr=live_server_addr)
+
+
+def update_toc_readme(fn):
+    if os.path.isdir(fn):
+        fn = os.path.join(fn, 'index.md')
+        Path(fn).touch()
+
+    dn = os.path.dirname(fn)
+    title = dn.upper()
+    with open(fn, 'w') as fw:
+        fw.write(f'## {title}\n')
+        fw.write('\n')
+        for n in os.listdir(dn):
+            if n.endswith('.md') and n != 'index.md':
+                fw.write(f'* {n[:-3]}[{n}]\n')
+        fw.write('\n')
 
 
 class Watcher(threading.Thread):

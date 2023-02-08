@@ -1,5 +1,5 @@
 import argparse
-from .renderrer import Watcher, ThreadedServer, compile_mmd, render_md
+from .renderrer import Watcher, ThreadedServer, compile_mmd, render_md, update_toc_readme
 import logging
 import os
 
@@ -51,5 +51,8 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             w.stop = True # kill the watcher
     else:
-        compile_mmd(n.file, out_filename=n.output)
+        if os.path.isfile(n.file) and 'index.md' != n.file:
+            compile_mmd(n.file, out_filename=n.output)
+        else:
+            update_toc_readme(n.file)
 
