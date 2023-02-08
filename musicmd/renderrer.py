@@ -55,7 +55,6 @@ class Grid:
         else:
             jscript = ''
 
-
         css = resource_string('musicmd', 'resources/musicgrid.css').decode()
 
         self.html["head"] = '<!DOCTYPE html>\n'\
@@ -603,13 +602,10 @@ def update_toc_readme(fn):
         Path(fn).touch()
 
     dn = os.path.dirname(fn)
-    title = dn.upper()
     with open(fn, 'w') as fw:
-        fw.write(f'## {title}\n')
-        fw.write('\n')
         for n in os.listdir(dn):
             if n.endswith('.md') and n != 'index.md':
-                fw.write(f'* {n[:-3]}[{n}]\n')
+                fw.write(f'* [{n[:-3]}]({n})\n')
         fw.write('\n')
 
 
