@@ -1,5 +1,5 @@
 import argparse
-from .renderrer import Watcher, ThreadedServer, compile_mmd, render_md, update_toc_readme
+from .renderrer import Watcher, ThreadedServer, compile_mmd, update_toc_readme
 import logging
 import os
 
@@ -12,6 +12,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="musicmd", description='Compile a mmd script to html')
     parser.add_argument('file', help='The mmd script file that will be compiled')
     parser.add_argument('-o', '--output', help='Name of the output HTML file', default='')
+    parser.add_argument('-r', '--recursive', help='Index folders recursively', default='', action='store_true')
 
     sp = parser.add_subparsers(title="optional commands", dest="command")
     serve = sp.add_parser('serve', help='Start a live web-server and preview the compiled script')
@@ -54,5 +55,5 @@ if __name__ == "__main__":
         if os.path.isfile(n.file) and 'index.md' != n.file:
             compile_mmd(n.file, out_filename=n.output)
         else:
-            update_toc_readme(n.file)
+            update_toc_readme(n.file, n.recursive)
 

@@ -19,13 +19,13 @@ def get_css():
 class Grid:
     """
     The markdown document object.
-    It is the root of the abstrac syntax tree for the music grid.
+    It is the root of the abstract syntax tree for the music grid.
 
     Its to_html() method allows to compile the tree in HTML format.
     """
+
     def __init__(self):
-        self.tree = []
-        self.gridRows = []
+        self.tree = []  # type: List[Element]
         self.debug = []
 
     @staticmethod
@@ -55,14 +55,14 @@ class Grid:
             # meta_refresh = '<meta http-equiv="refresh" content="1">'
             script_refresh = resource_string('musicmd', 'resources/musicgrid.js').decode()
             jscript = '<script type = "text/javascript" >\n' \
-                           f'var server_address = "{live_server_addr}"\n' \
-                           f'{script_refresh}\n</script>\n'
+                      f'var server_address = "{live_server_addr}"\n' \
+                      f'{script_refresh}\n</script>\n'
         else:
             jscript = ''
 
         css = get_css()
-        self.html["head"] = '<!DOCTYPE html>\n'\
-                            '<html lang="en" dir="ltr">\n'\
+        self.html["head"] = '<!DOCTYPE html>\n' \
+                            '<html lang="en" dir="ltr">\n' \
                             '<head>\n' \
                             '<meta charset="utf-8">' \
                             '<style>' \
@@ -280,6 +280,7 @@ class SameMeasure(Chord):
     def __init__(self):
         self.html_text = '%'
 
+
 class GridRow(ElementGroup):
     # A row consists of may bars
     tag_start = '<div class="grid-row">'
@@ -287,6 +288,7 @@ class GridRow(ElementGroup):
 
     def __init__(self):
         super(GridRow, self).__init__()
+
 
 class Vspace(Element):
     def __init__(self, kind=''):
@@ -318,7 +320,7 @@ class Rarrow(Element):
     rep_tag = "->"
 
     def __init__(self):
-        self.html_text = "&rarr;" # "&#8680;"
+        self.html_text = "&rarr;"  # "&#8680;"
 
 
 class SectionComment(Element):
@@ -494,7 +496,7 @@ class GridProcessor:
             m_vspace = self.re["vspace"].match(line)
             m_sectn = self.re["sections-line"].match(line)
             m_grrow = self.re["grid-row"].match(line)
-            m_tag= self.re["tag"].match(line)
+            m_tag = self.re["tag"].match(line)
 
             if m_title:
                 g.info['title'] = m_title.group(1).strip()
@@ -520,7 +522,7 @@ class GridProcessor:
                 g.tree.append(gridRow)
             elif m_tag:
                 e = Element()
-                e.html_text=m_tag.group(0)
+                e.html_text = m_tag.group(0)
                 g.tree.append(e)
             else:
                 g.tree.append(NotRecognized(line))
@@ -581,14 +583,14 @@ def compile_mmd(filename, out_filename="index.html", live_server_addr=None):
     with open(filename, "r", encoding='utf-8') as f:
         mmd = f.readlines()
 
-    g = render_md(mmd)
+    g = build_md(mmd)
 
     # write html
     with open(out_filename, 'w', encoding='utf-8') as f:
         f.write(g.to_html(live_server_addr=live_server_addr))
 
 
-def render_md(mmd):
+def build_md(mmd):
     # read it
     gp = GridProcessor()
     g = gp.run(mmd)
@@ -596,21 +598,36 @@ def render_md(mmd):
 
 
 def render_md_html(mmd, live_server_addr=None):
-    g = render_md(mmd)
+    g = build_md(mmd)
     return g.to_html(live_server_addr=live_server_addr)
 
 
-def update_toc_readme(fn):
+def update_toc_readme(fn, recursive=False):
     if os.path.isdir(fn):
         fn = os.path.join(fn, 'index.md')
         Path(fn).touch()
 
     dn = os.path.dirname(fn)
-    with open(fn, 'w') as fw:
-        for n in os.listdir(dn):
-            if n.endswith('.md') and n != 'index.md':
-                fw.write(f'* [{n[:-3]}]({n})\n')
-        fw.write('\n')
+
+    s_dir = []
+    s_songs = []
+    for n in os.listdir(dn):
+        nd = os.path.join(dn, n)
+        print(n)
+        if n.startswith('.'):
+            continue
+        if os.path.isdir(nd):
+            n2 = n.replace('-', ' ').replace('_', ' ')
+            s_dir.append(f'[{n2}]({n})')
+            if recursive:
+                update_toc_readme(nd, recursive)
+        elif n.endswith('.md') and n != 'index.md':
+            s_songs.append(f'* [{n[:-3]}]({n})')
+
+        with open(fn, 'w') as fw:
+            listing = '\n'
+            fw.write(f'{", ".join(s_dir)}\n\n{listing.join(s_songs)}')
+        print(f'{fn} updated.')
 
 
 class Watcher(threading.Thread):
@@ -632,4 +649,3 @@ class Watcher(threading.Thread):
                 compile_mmd(self.filename, live_server_addr=self.live_server_addr)
                 self.is_changed = True
             sleep(0.2)
-

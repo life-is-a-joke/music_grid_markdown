@@ -2,7 +2,7 @@ import os
 
 from mkdocs import plugins
 
-from .renderrer import render_md_html, update_toc_readme, get_css
+from .renderrer import render_md_html, get_css
 
 
 def get_relpath_from_docs_path(p):
